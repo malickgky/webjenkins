@@ -9,14 +9,14 @@ pipeline {
     stages {
         stage('Cloner le repo') {
             steps {
-                git 'https://github.com/malickgky/webjenkins' 
+                git 'https://github.com/malickgky/webjenkins'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    bat "docker build -t %DOCKER_IMAGE% ."
+                    sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
         }
@@ -24,9 +24,9 @@ pipeline {
         stage('Déployer sur VM') {
             steps {
                 script {
-                    bat "docker stop tp5site || true"
-                    bat "docker rm tp5site || true"
-                    bat "docker run -d -p 8082:80 --name tp5site %DOCKER_IMAGE%"
+                    sh "docker stop tp5site || true"
+                    sh "docker rm tp5site || true"
+                    sh "docker run -d -p 8082:80 --name tp5site $DOCKER_IMAGE"
                 }
             }
         }
@@ -37,9 +37,7 @@ pipeline {
             echo "Déploiement terminé ! Accède à http://172.20.10.3:8082"
         }
         failure {
-            echo "Le pipeline a échoué "
+            echo "Le pipeline a échoué"
         }
     }
 }
-
-
