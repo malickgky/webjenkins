@@ -3,10 +3,11 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "tp5site:01"
-        DOCKER_HOST = "tcp://172.20.10.3:2375" // IP de ta VM + port Remote API
+        DOCKER_HOST = "tcp://172.20.10.3:2375"
     }
 
     stages {
+
         stage('Cloner le repo') {
             steps {
                 git 'https://github.com/malickgky/webjenkins'
@@ -16,7 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t $DOCKER_IMAGE ."
+                    bat "docker build -t %DOCKER_IMAGE% ."
                 }
             }
         }
@@ -24,9 +25,9 @@ pipeline {
         stage('Déployer sur VM') {
             steps {
                 script {
-                    sh "docker stop tp5site || true"
-                    sh "docker rm tp5site || true"
-                    sh "docker run -d -p 8082:80 --name tp5site $DOCKER_IMAGE"
+                    bat "docker stop tp5site || exit 0"
+                    bat "docker rm tp5site || exit 0"
+                    bat "docker run -d -p 8082:80 --name tp5site %DOCKER_IMAGE%"
                 }
             }
         }
@@ -37,7 +38,7 @@ pipeline {
             echo "Déploiement terminé ! Accède à http://172.20.10.3:8082"
         }
         failure {
-            echo "Le pipeline a échoué"
-        } 
+            echo "Le pipeline a échoué" 
+        }
     }
 }
