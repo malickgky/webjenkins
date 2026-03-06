@@ -38,7 +38,7 @@ pipeline {
             echo "Déploiement terminé ! Accède à http://172.20.10.3:8082"
         }
         failure {
-            echo "Le pipeline a échoué"   
+            echo "Le pipeline a échoué"    
         }
     }
 }
